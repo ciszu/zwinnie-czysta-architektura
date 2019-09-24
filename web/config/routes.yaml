@@ -1,0 +1,41 @@
+
+app.swagger_ui:
+    path: /api/doc
+    methods: GET
+    defaults: { _controller: nelmio_api_doc.controller.swagger_ui }
+
+app.swagger:
+    path: /api/doc.json
+    methods: GET
+    defaults: { _controller: nelmio_api_doc.controller.swagger }
+
+
+subscribe:
+    path: /api/subscribe/{tenantName}/{packageType}
+    methods: POST
+    controller: Web\Controller\SubscriptionController::subscribe
+
+buyPackage:
+    path: /api/buyPackage/{subscriptionId}/{newPackageType}
+    methods: POST
+    controller: Web\Controller\SubscriptionController::buyPackage
+
+buyHeartbeats:
+    path: api/buyHeartbeats/{subscriptionId}/{heartbeats}
+    methods: POST
+    controller: Web\Controller\SubscriptionController::buyHeartbeats
+
+getActivePackage:
+    path: /api/info/{subscriptionId}
+    methods: GET
+    controller: Web\Controller\SubscriptionController::getActivePackage
+
+prepareOfferForNewTenant:
+    path: /api/newTenantOffer
+    methods: GET
+    controller: Web\Controller\SubscriptionController::prepareOfferForNewTenant
+
+prepareOfferForExistingTenant:
+    path: /api/existingTenantOffer/{subscriptionId}
+    methods: GET
+    controller: Web\Controller\SubscriptionController::prepareOfferForExistingTenant

@@ -1,2 +1,5 @@
 .idea/*
 vendor/
+var/*
+!var/.gitkeep
+web/var/*

@@ -1,0 +1,9 @@
+{
+  "name": "mozartify/subscription",
+  "version": "1.0.0",
+  "autoload": {
+    "psr-4": {
+      "Mozartify\\Subscription\\": "src/"
+    }
+  }
+}
