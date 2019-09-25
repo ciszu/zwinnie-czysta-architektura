@@ -2,7 +2,7 @@
 
 namespace Mozartify\Subscription;
 
-class Pardot
+class PardotEcommerceAdapter implements EcommerceAdapter
 {
     public function createNewContact(int $tenantId, string $packageType)
     {

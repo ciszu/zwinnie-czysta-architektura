@@ -4,7 +4,7 @@ namespace Mozartify\Subscription;
 
 use Throwable;
 
-class DomainException extends \Exception
+class SubscriptionDomainException extends \Exception
 {
     public function __construct($message = "", Throwable $previous = null)
     {

@@ -13,29 +13,29 @@ app.swagger:
 subscribe:
     path: /api/subscribe/{tenantName}/{packageType}
     methods: POST
-    controller: Web\Controller\SubscriptionController::subscribe
+    controller: Web\Controller\ApiController::subscribe
 
 buyPackage:
     path: /api/buyPackage/{subscriptionId}/{newPackageType}
     methods: POST
-    controller: Web\Controller\SubscriptionController::buyPackage
+    controller: Web\Controller\ApiController::buyPackage
 
 buyHeartbeats:
     path: api/buyHeartbeats/{subscriptionId}/{heartbeats}
     methods: POST
-    controller: Web\Controller\SubscriptionController::buyHeartbeats
+    controller: Web\Controller\ApiController::buyHeartbeats
 
 getActivePackage:
     path: /api/info/{subscriptionId}
     methods: GET
-    controller: Web\Controller\SubscriptionController::getActivePackage
+    controller: Web\Controller\ApiController::getActivePackage
 
 prepareOfferForNewTenant:
     path: /api/newTenantOffer
     methods: GET
-    controller: Web\Controller\SubscriptionController::prepareOfferForNewTenant
+    controller: Web\Controller\ApiController::prepareOfferForNewTenant
 
 prepareOfferForExistingTenant:
     path: /api/existingTenantOffer/{subscriptionId}
     methods: GET
-    controller: Web\Controller\SubscriptionController::prepareOfferForExistingTenant
+    controller: Web\Controller\ApiController::prepareOfferForExistingTenant

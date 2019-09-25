@@ -105,6 +105,9 @@
     "monolog/monolog": {
         "version": "1.25.1"
     },
+    "mozartify/marketplace": {
+        "version": "1.0.0"
+    },
     "mozartify/player": {
         "version": "1.0.0"
     },

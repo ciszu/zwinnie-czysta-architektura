@@ -2,26 +2,36 @@
 
 namespace Web\Controller;
 
-use Mozartify\Subscription\Domain;
-use Mozartify\Subscription\DomainException;
-use Mozartify\Subscription\FileStorage;
-use Mozartify\Subscription\Pardot;
+use Mozartify\Marketplace\MarketplaceDomain;
+use Mozartify\Subscription\SubscriptionDomain;
+use Mozartify\Subscription\SubscriptionDomainException;
+use Mozartify\Subscription\FileSystemSubscriptionRepository;
+use Mozartify\Subscription\PardotEcommerceAdapter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use Swagger\Annotations as SWG;
 use Symfony\Component\Routing\Annotation\Route;
 
-class SubscriptionController
+class ApiController
 {
     /**
-     * @var Domain
+     * @var SubscriptionDomain
      */
-    private $domain;
+    private $subscriptionDomain;
+
+    /**
+     * @var MarketplaceDomain
+     */
+    private $marketplaceDomain;
 
     public function __construct()
     {
-        $this->domain = new Domain(new FileStorage('../../var/zca1.json'), new Pardot());
+        $this->subscriptionDomain = new SubscriptionDomain(
+            new FileSystemSubscriptionRepository('../../var/zca2.json'),
+            new PardotEcommerceAdapter()
+        );
+        $this->marketplaceDomain = new MarketplaceDomain($this->subscriptionDomain);
     }
 
     /**
@@ -34,8 +44,8 @@ class SubscriptionController
     public function subscribe(string $tenantName, string $packageType)
     {
         try {
-            $subscriptionId = $this->domain->subscribe($tenantName, $packageType);
-        } catch (DomainException $e) {
+            $subscriptionId = $this->subscriptionDomain->subscribe($tenantName, $packageType);
+        } catch (SubscriptionDomainException $e) {
             return $this->decorateDomainException($e);
         }
         return new JsonResponse([
@@ -53,8 +63,8 @@ class SubscriptionController
     public function buyPackage(int $subscriptionId, string $newPackageType)
     {
         try {
-            $this->domain->buyPackage($subscriptionId, $newPackageType);
-        } catch (DomainException $e) {
+            $this->subscriptionDomain->buyPackage($subscriptionId, $newPackageType);
+        } catch (SubscriptionDomainException $e) {
             return $this->decorateDomainException($e);
         }
         return new JsonResponse([
@@ -72,8 +82,8 @@ class SubscriptionController
     public function buyHeartbeats(int $subscriptionId, int $heartbeats)
     {
         try {
-            $this->domain->buyHeartbeats($subscriptionId, $heartbeats);
-        } catch (DomainException $e) {
+            $this->subscriptionDomain->buyHeartbeats($subscriptionId, $heartbeats);
+        } catch (SubscriptionDomainException $e) {
             return $this->decorateDomainException($e);
         }
         return new JsonResponse([
@@ -90,11 +100,7 @@ class SubscriptionController
      */
     public function getActivePackage(int $subscriptionId)
     {
-        try {
-            $activePackage = $this->domain->getActivePackage($subscriptionId);
-        } catch (\Exception $e) {
-            return $this->decorateDomainException($e);
-        }
+        $activePackage = $this->subscriptionDomain->getActivePackage($subscriptionId);
         return new JsonResponse([
             'activePackage' => $activePackage
         ]);
@@ -127,8 +133,8 @@ class SubscriptionController
     private function prepareCommercialOffer(?int $subscriptionId)
     {
         try {
-            $offer = $this->domain->prepareCommercialOffer($subscriptionId);
-        } catch (\Exception $e) {
+            $offer = $this->marketplaceDomain->prepareCommercialOffer($subscriptionId);
+        } catch (SubscriptionDomainException $e) {
             return $this->decorateDomainException($e);
         }
         return new JsonResponse([
@@ -136,7 +142,7 @@ class SubscriptionController
         ]);
     }
 
-    private function decorateDomainException(DomainException $e)
+    private function decorateDomainException(SubscriptionDomainException $e)
     {
         if ($e->getPrevious()) {
             throw $e->getPrevious();

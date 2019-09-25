@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "54c2e95c6508f89350d4fc13430f8ea2",
+    "content-hash": "0d0371382d713177cb519d22b64a7ffa",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1488,6 +1488,24 @@
             "time": "2019-09-06T13:49:17+00:00"
         },
         {
+            "name": "mozartify/marketplace",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "../core/marketplace",
+                "reference": "2532d2b561df629a9a4fb2e802042b6ca7850bad"
+            },
+            "require": {
+                "mozartify/subscription": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Mozartify\\Marketplace\\": "src/"
+                }
+            }
+        },
+        {
             "name": "mozartify/player",
             "version": "1.0.0",
             "dist": {
@@ -1508,13 +1526,24 @@
             "dist": {
                 "type": "path",
                 "url": "../core/subscription",
-                "reference": "8965d0c56ab8437a82fda4326f25ac3218056c0d"
+                "reference": "9beee8d348d6534debb3930823771074e05306e3"
+            },
+            "require-dev": {
+                "behat/behat": "^3.5"
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
                     "Mozartify\\Subscription\\": "src/"
                 }
+            },
+            "scripts": {
+                "test": [
+                    "vendor/bin/behat"
+                ],
+                "post-install-cmd": [
+                    "@test"
+                ]
             }
         },
         {

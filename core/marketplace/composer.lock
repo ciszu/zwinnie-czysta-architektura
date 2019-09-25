@@ -1,0 +1,44 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "5f0f37539f45f446c45fbd4b9748295f",
+    "packages": [
+        {
+            "name": "mozartify/subscription",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "../subscription",
+                "reference": "9beee8d348d6534debb3930823771074e05306e3"
+            },
+            "require-dev": {
+                "behat/behat": "^3.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Mozartify\\Subscription\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "vendor/bin/behat"
+                ],
+                "post-install-cmd": [
+                    "@test"
+                ]
+            }
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}
