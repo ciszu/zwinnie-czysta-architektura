@@ -9,40 +9,17 @@ class MarketplaceDomain
     /**
      * @var SubscriptionDomain
      */
-    private $subscriptionDomain;
+    protected $subscriptionDomain;
 
     public function __construct(SubscriptionDomain $subscriptionDomain)
     {
         $this->subscriptionDomain = $subscriptionDomain;
     }
 
-    public function prepareCommercialOffer(?int $subscriptionId)
+    public function __call($name, $arguments)
     {
-        $offer = [
-            'extraHeartbeats' => false,
-            'availablePackages' => []
-        ];
-        $allPackageTypes = [SubscriptionDomain::PackageDemo, SubscriptionDomain::PackageStandard, SubscriptionDomain::PackagePremium];
-
-        if ($subscriptionId) {
-            $activePackage = $this->subscriptionDomain->getActivePackage($subscriptionId);
-            $activePackageIsDemo = $activePackage['type'] === SubscriptionDomain::PackageDemo;
-            $activePackageIsPremium = $activePackage['type'] === SubscriptionDomain::PackagePremium;
-            $notAvailablePackageTypes = [SubscriptionDomain::PackageDemo];
-            !$activePackageIsPremium ?: $notAvailablePackageTypes[] = SubscriptionDomain::PackageStandard;
-
-            $availablePackageTypes = array_diff($allPackageTypes, $notAvailablePackageTypes);
-            $offer['extraHeartbeats'] = !$activePackageIsDemo;
-        } else {
-            $availablePackageTypes = $allPackageTypes;
-        }
-        foreach ($availablePackageTypes as $packageType) {
-            $offer['availablePackages'][] = [
-                'type' => $packageType,
-                'heartbeats' => SubscriptionDomain::getHeartbeatsByPackageType($packageType)
-            ];
-        }
-        return $offer;
+        $classname = 'Mozartify\\Marketplace\\UseCases\\' . ucfirst($name) . 'UseCase';
+        $obj = new $classname($this->subscriptionDomain);
+        return call_user_func_array([$obj, '__invoke'], $arguments);
     }
-
 }

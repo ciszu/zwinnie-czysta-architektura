@@ -28,7 +28,7 @@ class ApiController
     public function __construct()
     {
         $this->subscriptionDomain = new SubscriptionDomain(
-            new FileSystemSubscriptionRepository('../../var/zca2.json'),
+            new FileSystemSubscriptionRepository('../../var/zca3.json'),
             new PardotEcommerceAdapter()
         );
         $this->marketplaceDomain = new MarketplaceDomain($this->subscriptionDomain);

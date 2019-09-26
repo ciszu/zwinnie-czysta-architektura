@@ -36,7 +36,7 @@ abstract class SubscriptionRepository
 
     public function addExtraHeartbeats(int $subscriptionId, int $heartbeats)
     {
-        $activePackageIdx = $this->storage->findActivePackageIdx($subscriptionId);
+        $activePackageIdx = $this->findActivePackageIdx($subscriptionId);
         $activePackage = $this->storage->select('package', $activePackageIdx);
         $activePackage['heartbeats']+= $heartbeats;
         $this->storage->update('package', $activePackageIdx, $activePackage);
