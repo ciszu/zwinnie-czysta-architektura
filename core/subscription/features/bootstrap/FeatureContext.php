@@ -3,9 +3,10 @@
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
+use Mozartify\Subscription\RamSubscriptionRepository;
 use Mozartify\Subscription\SubscriptionDomain;
-use Mozartify\Subscription\FileSystemSubscriptionRepository;
 use Mozartify\Subscription\PardotEcommerceAdapter;
+use Mozartify\Subscription\SubscriptionDomainException;
 
 /**
  * Defines application features from the specific context.
@@ -15,7 +16,17 @@ class FeatureContext implements Context
     /**
      * @var SubscriptionDomain
      */
-    private $domain;
+    private $subscriptionDomain;
+
+    /**
+     * @var int
+     */
+    private $subscriptionId;
+
+    /**
+     * @var SubscriptionDomainException
+     */
+    private $domainException;
 
     /**
      * Initializes context.
@@ -26,48 +37,49 @@ class FeatureContext implements Context
      */
     public function __construct()
     {
-
-        $this->domain = new SubscriptionDomain(new FileSystemSubscriptionRepository('../../var/behat.json'), new PardotEcommerceAdapter());
-
+        $this->subscriptionDomain = new SubscriptionDomain(
+            new RamSubscriptionRepository(),
+            new PardotEcommerceAdapter())
+        ;
     }
 
     /**
-     * @Given there is a :arg1, which costs £:arg2
+     * @Given Tenant subscribed :arg1 package
      */
-    public function thereIsAWhichCostsPs($arg1, $arg2)
+    public function tenantSubscribedPackage($arg1)
     {
-        throw new PendingException();
+        $this->subscriptionId = $this->subscriptionDomain->subscribe('acme', $arg1);
     }
 
     /**
-     * @When I add the :arg1 to the basket
+     * @When Tenant attempt to buy :arg1 package
      */
-    public function iAddTheToTheBasket($arg1)
+    public function tenantAttemptToBuyPackage($arg1)
     {
-        throw new PendingException();
+        try {
+            $this->subscriptionDomain->buyPackage($this->subscriptionId, $arg1);
+        } catch (SubscriptionDomainException $e) {
+            $this->domainException = $e;
+        }
     }
 
     /**
-     * @Then I should have :arg1 product in the basket
+     * @Then Tenant should be upgraded to :arg1 package
      */
-    public function iShouldHaveProductInTheBasket($arg1)
+    public function tenantShouldBeUpgradedToPackage($arg1)
     {
-        throw new PendingException();
+        $packageInfo = $this->subscriptionDomain->getActivePackage($this->subscriptionId);
+        \PHPUnit\Framework\Assert::assertSame(
+            $packageInfo['type'],
+            $arg1
+        );
     }
 
     /**
-     * @Then the overall basket price should be £:arg1
+     * @Then Domain exception should occure
      */
-    public function theOverallBasketPriceShouldBePs($arg1)
+    public function domainExceptionShouldOccure()
     {
-        throw new PendingException();
-    }
-
-    /**
-     * @Then I should have :arg1 products in the basket
-     */
-    public function iShouldHaveProductsInTheBasket($arg1)
-    {
-        throw new PendingException();
+        \PHPUnit\Framework\Assert::assertIsObject($this->domainException);
     }
 }
